@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Multi-Document Research Summarizer</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet"
+href="style.css">
+
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+
+            <i class="fa-solid fa-brain"></i>
+
+        </div>
+
+        <div>
+
+            <h2>DocuMind AI</h2>
+
+            <p>Assistant</p>
+
+        </div>
+
+    </div>
+
+    <nav>
+
+        <a href="#" class="active">
+
+            <i class="fa-solid fa-house"></i>
+
+            Dashboard
+
+        </a>
+
+        <a href="#upload">
+
+            <i class="fa-solid fa-file-arrow-up"></i>
+
+            Upload PDFs
+
+        </a>
+
+        <a href="#summary">
+
+            <i class="fa-solid fa-file-lines"></i>
+
+            Executive Summary
+
+        </a>
+
+        <a href="#chat">
+
+            <i class="fa-solid fa-comments"></i>
+
+            AI Chat
+
+        </a>
+
+     
+
+        <a href="#chatHistory">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+             History
+        </a>
+
+    </nav>
+
+</aside>
+
+<div class="main-content">
+
+<header class="topbar">
+
+    <div>
+
+        <h1>
+
+            AI DocuMind Assistant
+
+        </h1>
+
+        <p>
+
+            Multi Document Research Summarizer using
+            FastAPI • ChromaDB • BM25 • Ollama
+
+        </p>
+
+    </div>
+
+   
+
+</header>
+
+<section class="hero">
+
+    <div class="hero-left">
+
+        <h2>
+
+            Analyze Multiple PDF Documents
+            Using Artificial Intelligence
+
+        </h2>
+
+        <p>
+
+            Upload multiple PDF documents.
+
+            The system automatically extracts text,
+            generates embeddings,
+            creates a hybrid index,
+            prepares an executive summary
+            and lets you chat with your documents.
+
+        </p>
+        <div class="hero-buttons" style="display:flex;gap:18px;align-items:center;justify-content:flex-start;margin-top:35px;">
+            <button
+            onclick="location.href='learn.html'"
+            style="width:200px;height:56px;
+            border:none;
+               border-radius:14px;
+               background:#ffffff;
+               color:#2563eb;
+               font-size:16px;
+               font-weight:600;
+               cursor:pointer;
+               display:flex;
+               align-items:center;
+               justify-content:center;
+               gap:10px;
+               box-shadow:0 10px 25px rgba(0,0,0,.12);
+               transition:all .3s ease;">
+               <i class="fa-solid fa-book-open"></i>
+               Learn More
+            </button>
+            <button
+            onclick="location.href='contact.html'"
+            style="width:200px;height:56px;
+               border:2px solid rgba(255,255,255,.35);
+               border-radius:14px;
+               background:rgba(255,255,255,.15);
+               backdrop-filter:blur(10px);
+               color:#ffffff;
+               font-size:16px;
+               font-weight:600;
+               cursor:pointer;
+               display:flex;
+               align-items:center;
+               justify-content:center;
+               gap:10px;
+               transition:all .3s ease;">
+               <i class="fa-solid fa-envelope"></i>
+               Contact Us
+            </button>
+        </div>
+
+    </div>
+
+    <div class="hero-right">
+
+        <img
+            src="assets/4.png"
+            alt="Research">
+
+    </div>
+
+</section>
+
+<section class="stats" id="analytics">
+
+    <div class="stat-card">
+
+        <div class="stat-icon blue">
+
+            <i class="fa-solid fa-file-pdf"></i>
+
+        </div>
+
+        <div>
+
+            <h3 id="pdfCount">0</h3>
+
+            <p>Uploaded PDFs</p>
+
+        </div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-icon purple">
+
+            <i class="fa-solid fa-layer-group"></i>
+
+        </div>
+
+        <div>
+
+            <h3 id="chunkCount">0</h3>
+
+            <p>Text Chunks</p>
+
+        </div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-icon green">
+
+            <i class="fa-solid fa-clock"></i>
+
+        </div>
+
+        <div>
+
+            <h3 id="processingTime">0 s</h3>
+
+            <p>Processing Time</p>
+
+        </div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-icon orange">
+
+            <i class="fa-solid fa-robot"></i>
+
+        </div>
+
+        <div>
+
+            <h3>Llama 3</h3>
+
+            <p>AI Model</p>
+
+        </div>
+
+    </div>
+
+</section>
+<section class="dashboard-grid">
+
+<div class="left-column">
+
+    <div class="card" id="upload">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+
+            <h2>Upload Documents</h2>
+
+        </div>
+
+        <label class="upload-area" for="pdfFiles">
+
+            <img
+                src="assets/upload.png"
+                alt="Upload">
+
+            <h3>
+
+                Upload PDF Files
+
+            </h3>
+
+            <p>
+
+                Click here to browse
+
+            </p>
+
+        </label>
+
+        <input
+            type="file"
+            id="pdfFiles"
+            multiple
+            accept=".pdf"
+            hidden>
+
+        <button
+            id="uploadBtn"
+            class="primary-btn">
+
+            <i class="fa-solid fa-upload"></i>
+
+            Upload Documents
+
+        </button>
+
+        <div id="uploadStatus"></div>
+        <div id="processStatus"></div>
+
+    </div>
+    
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-lightbulb"></i>
+
+            <h2>Suggested Questions</h2>
+
+        </div>
+
+        <div class="feature-tags">
+
+            <span>&#8226; Summarize all PDFs<br></span>
+
+            <span>&#8226; Compare Documents<br></span>
+
+            <span>&#8226; Explain Architecture<br></span>
+
+            <span>&#8226; Technologies Used<br></span>
+
+            <span>&#8226; Generate Report<br></span>
+
+            <span>&#8226; Common Topics<br></span>
+            
+            <span>&#8226; Extract Key Claims<br></span>
+          
+
+        </div>
+
+    </div>
+
+    
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-folder-open"></i>
+
+            <h2>Uploaded Documents</h2>
+
+        </div>
+
+        <div id="uploadedFiles">
+
+            <div class="empty-state">
+
+                <h3>
+
+                    No PDFs Uploaded
+
+                </h3>
+
+                <p>
+
+                    Uploaded documents will appear here.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    
+    <div class="card">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-clock-rotate-left"></i>
+
+            <h2>Recent Questions</h2>
+
+        </div>
+
+        <div id="chatHistory">
+
+            <div class="empty-state">
+
+                <h3>
+
+                    No Questions Yet
+
+                </h3>
+
+                <p>
+
+                    Your recent AI conversations
+
+                    will appear here.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="right-column">
+    <div class="card" id="summary">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-file-lines"></i>
+
+            <h2>Executive Summary</h2>
+
+        </div>
+
+        <div id="summaryBox">
+
+            <div class="welcome-box">
+
+                <h3>
+
+                    No Summary Generated
+
+                </h3>
+
+                <p>
+
+                    Upload PDF documents.
+
+                    The application will automatically
+
+                    process all documents and generate
+
+                    an executive summary.
+
+                </p>
+
+            </div>
+
+        </div>
+        <div class="answer-actions">
+
+            <button id="copyBtn">
+
+                <i class="fa-solid fa-copy"></i>
+
+                Copy
+
+            </button>
+
+            <button id="downloadBtn">
+
+                <i class="fa-solid fa-download"></i>
+
+                Download
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="card" id="chat">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-comments"></i>
+            <h2>AI DocuMind Assistant</h2>
+
+        </div>
+
+        <p class="description">
+            Ask anything about your uploaded documents.
+            The AI answers only from the uploaded PDFs using
+            Hybrid Retrieval (ChromaDB + BM25).
+        </p>
+
+        <textarea
+
+            id="question"
+
+            placeholder="Examples:
+
+• Summarize all uploaded PDFs
+
+• Compare the uploaded documents
+
+• Explain the architecture
+
+• What technologies are used?
+
+• Generate an executive summary">
+
+        </textarea>
+
+        <div class="button-row">
+
+            <button
+
+                id="askBtn"
+
+                class="primary-btn">
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+                Ask AI
+
+            </button>
+
+            <button
+
+                id="clearBtn"
+
+                class="danger-btn">
+
+                <i class="fa-solid fa-trash"></i>
+
+                Clear Chat
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-robot"></i>
+
+            <h2>AI Response</h2>
+
+        </div>
+
+        <div id="answer">
+
+            <div class="welcome-box">
+
+                <img
+                    src="assets/chat.png"
+                    alt="AI">
+
+                <h2>
+
+                    🤖 Welcome to DocuMind Assistant
+
+                </h2>
+
+                <p>
+
+                    Upload PDF documents.
+
+                    The application will automatically:
+
+                </p>
+
+                <ul style="text-align:left;line-height:2">
+
+                    <li>📄 Upload PDFs</li>
+
+                    <li>⚡ Process Documents</li>
+
+                    <li>🧠 Build AI Index</li>
+
+                    <li>📝 Generate Executive Summary</li>
+
+                    <li>💬 Answer Questions</li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+      
+
+    </div>
+    
+
+   
+
+    
+
+</div>
+
+</section>
+<!-- ===================================== -->
+<!-- WHY CHOOSE RESEARCH AI -->
+<!-- ===================================== -->
+
+<section class="feature-wrapper">
+
+ 
+
+    <div class="feature-section">
+
+        <!-- Card 1 -->
+
+        <div class="feature-box">
+
+            <span class="border-animation"></span>
+
+            <div class="feature-icon">
+
+                <i class="fa-solid fa-bolt"></i>
+
+            </div>
+
+            <h3>Fast Research</h3>
+
+            <p>
+
+                Upload multiple research papers and receive
+                AI-generated summaries within seconds.
+
+            </p>
+
+        </div>
+
+        <!-- Card 2 -->
+
+        <div class="feature-box">
+
+            <span class="border-animation"></span>
+
+            <div class="feature-icon">
+
+                <i class="fa-solid fa-lightbulb"></i>
+
+            </div>
+
+            <h3>Key Insights</h3>
+
+            <p>
+
+                Instantly discover important findings,
+                trends, and hidden knowledge.
+
+            </p>
+
+        </div>
+
+        <!-- Card 3 -->
+
+        <div class="feature-box">
+
+            <span class="border-animation"></span>
+
+            <div class="feature-icon">
+
+                <i class="fa-solid fa-comments"></i>
+
+            </div>
+
+            <h3>Ask Questions</h3>
+
+            <p>
+
+                Chat naturally with your uploaded documents
+                and receive accurate answers instantly.
+
+            </p>
+
+        </div>
+
+        <!-- Card 4 -->
+
+        <div class="feature-box">
+
+            <span class="border-animation"></span>
+
+            <div class="feature-icon">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+            </div>
+
+            <h3>Better Decisions</h3>
+
+            <p>
+
+                Compare multiple documents and make
+                smarter research decisions using AI.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <!-- Brand -->
+        <div class="footer-column">
+
+            <h2 class="footer-logo">
+                AI DocuMind Assistant
+            </h2>
+
+            <p class="footer-description">
+                Intelligent multi-document analysis powered by AI. Upload,
+                summarize, compare, and chat with your research papers using
+                advanced Retrieval-Augmented Generation (RAG).
+            </p>
+
+        </div>
+
+        <!-- Features -->
+        <div class="footer-column">
+
+            <h3>Features</h3>
+
+            <ul>
+
+                <li>Document Summarization</li>
+
+                <li>AI Question Answering</li>
+
+                <li>Document Comparison</li>
+
+                <li>Insight Generation</li>
+
+                <li>Executive Summary</li>
+
+            </ul>
+
+        </div>
+
+        <!-- Technology -->
+        <div class="footer-column">
+
+            <h3>Technology</h3>
+
+            <ul>
+
+                <li>FastAPI</li>
+
+                <li>ChromaDB</li>
+
+                <li>BM25 Retrieval</li>
+
+                <li>Ollama </li>
+
+                <li>EasyOCR</li>
+
+            </ul>
+
+        </div>
+
+        <!-- Project -->
+        <div class="footer-column">
+
+            <h3>Project</h3>
+
+            <ul>
+
+                <li>Hybrid RAG Architecture</li>
+
+                <li>Semantic Search</li>
+
+                <li>Vector Database</li>
+
+                <li>Research Assistant</li>
+
+                <li>CDAC DBDA Project</li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 AI DocuMind Assistant 
+        </p>
+
+    </div>
+
+</footer>
+</div>
+
+<!-- ==========================================================
+     PREMIUM AI LOADING MODAL
+=========================================================== -->
+
+<div id="loadingModal" class="loading-modal">
+
+    <div class="loading-card">
+
+        <!-- Decorative Glow -->
+        <div class="card-glow"></div>
+
+        <!-- Animated Data Flow -->
+        <div class="data-flow">
+
+            <span class="flow left l1"></span>
+            <span class="flow left l2"></span>
+            <span class="flow left l3"></span>
+
+            <div class="ai-core">
+
+                <div class="orbit orbit1"></div>
+                <div class="orbit orbit2"></div>
+                <div class="orbit orbit3"></div>
+
+                <div class="core"></div>
+
+            </div>
+
+            <span class="flow right r1"></span>
+            <span class="flow right r2"></span>
+            <span class="flow right r3"></span>
+
+        </div>
+
+        <!-- Title -->
+
+        <h2 class="loading-title">
+
+            AI is Processing
+
+        </h2>
+
+        <!-- Dynamic Text (Updated by your JS) -->
+
+        <p class="loading-message">
+
+            Uploading • Processing • Generating Summary
+
+        </p>
+
+        <!-- Progress -->
+
+        
+
+        <!-- AI Processing Steps -->
+
+        <div class="processing-list">
+
+            <div class="step">
+
+                <span class="step-icon">📄</span>
+
+                <span>Uploading Documents</span>
+
+            </div>
+
+            <div class="step">
+
+                <span class="step-icon">🧠</span>
+
+                <span>Generating Embeddings</span>
+
+            </div>
+
+            <div class="step">
+
+                <span class="step-icon">🔍</span>
+
+                <span>Building Vector Index</span>
+
+            </div>
+
+            <div class="step">
+
+                <span class="step-icon">🤖</span>
+
+                <span>Running AI Analysis</span>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+
+        <div class="loading-footer">
+
+            Please wait while the AI analyzes your documents...
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Toast -->
+
+<div id="toast"></div>
+
+<!-- Scroll Button -->
+
+<button id="scrollTop">
+
+    <i class="fa-solid fa-arrow-up"></i>
+
+</button>
+
+<div id="toast"></div>
+
+<button id="scrollTop">
+
+    <i class="fa-solid fa-arrow-up"></i>
+
+</button>
+
+<script src="script.js" defer></script>
+
+</body>
+
+</html>
+  
